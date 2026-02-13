@@ -1,0 +1,33 @@
+services:
+  order_service:
+    build: ./order_service
+    environment:
+      - INVENTORY_URL=http://inventory_service:8000
+      - NOTIFICATION_URL=http://notification_service:8000
+      - INVENTORY_TIMEOUT_SEC=1.0
+    ports:
+      - "8001:8000"
+    depends_on:
+      - inventory_service
+      - notification_service
+
+  inventory_service:
+    build: ./inventory_service
+    environment:
+      - DELAY_SEC=2
+      - FAIL_MODE=none   # none|always|prob
+      - FAIL_PROB=0.0
+    ports:
+      - "8002:8000"
+
+  notification_service:
+    build: ./notification_service
+    ports:
+      - "8003:8000"
+
+  tests:
+    build: ./tests
+    environment:
+      - ORDER_URL=http://order_service:8000
+    depends_on:
+      - order_service

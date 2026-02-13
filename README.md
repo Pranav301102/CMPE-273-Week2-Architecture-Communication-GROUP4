@@ -1,5 +1,5 @@
 # CMPE 273 Week2 Assignment 
-### Group Member1: Ekant Kapgate, Hei Lam, Shefali Saini and Pranav Jitendra Trivedi
+### Group Members: Ekant Kapgate, Hei Lam, Shefali Saini and Pranav Jitendra Trivedi
 
 ## Part A: Synchronous REST
 ### 1. Start the system

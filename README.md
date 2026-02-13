@@ -69,3 +69,30 @@ docker compose logs -f inventory_service
 ```bash
 docker compose down
 ```
+## Screenshots for part A (Latency table)
+Baseline latency test (N requests)
+![Demo Screenshot](images/PartA-1.png)
+Inject 2s delay into Inventory and measure impact on Order latency
+![Demo Screenshot](images/PartA-2.png)
+Inject Inventory failure and show how OrderService handles it (timeout + error response)
+![Demo Screenshot](images/PartA-3.png)
+![Demo Screenshot](images/PartA-4.png)
+![Demo Screenshot](images/PartA-5.png)
+![Demo Screenshot](images/PartA-6.png)
+
+| Test case                                                       | What you changed                            |    p50 (ms) |    p95 (ms) |    avg (ms) | Observed result                                                 |
+| --------------------------------------------------------------- | ------------------------------------------- | ----------: | ----------: | ----------: | --------------------------------------------------------------- |
+| Baseline                                                        | Normal services (no injected delay/failure) |    **2.52** |    **2.83** |    **2.61** | 200 responses, very low latency                                 |
+| Inventory delay injected (2s) **with OrderService timeout ~1s** | Inventory slowed, OrderService times out    | **1011.56** | **1014.29** | **1011.53** | Many requests return **503 Service Unavailable** (timeout path) |
+
+
+Why does this behavior happen?
+1. Synchronous dependency = critical path latency
+   - In Part A, OrderService cannot respond until it finishes calling Inventory (and then Notification). So the Order latency ≈ Inventory latency + Notification latency + overhead.
+   - That is the reason why baseline is only a few ms when all services are fast inside Docker.
+2. Delay causes latency inflation, but timeout caps it
+   - When you injected Inventory slowness (2s), OrderService did not wait the full 2 seconds because it has an upstream timeout (~1 second).
+   - Result: latency clusters around ~1011 ms (see the table above), and the response becomes 503.
+3. Failure cascades in synchronous systems
+   - Any downstream outage/slowdown (Inventory) directly turns into errors at the caller (OrderService). This is a classic “cascading failure” risk in tightly coupled synchronous architectures.
+

@@ -135,6 +135,12 @@ docker compose logs -f analytics_consumer
 ```bash
 docker-compose run --rm tests
 ```
+This runs 4 tests:
+
+- Baseline Latency: Produces 100 orders, measures end-to-end latency
+- 10K Events: Stress test with 10,000 events, measures throughput
+- Consumer Lag: Measures lag in the queue
+- Replay: Tests offset reset capability
 
 6. Test multiple orders
 ```bash
@@ -156,16 +162,20 @@ curl -X POST http://localhost:5001/order \
 ## Screenshots
 
 Run Full Test Suite
+
 ![Demo Screenshot](images/PartC-4.png)
 
 Create a test order via curl 
+
 ![Demo Screenshot](images/PartC-1.png)
 
 Multiple Orders
-![Demo Screenshot](images/PartC-3.png)
+
+![Demo Screenshot](images/PartC-6.png)
 
 Analytics metrics (updated every 30 seconds)
-![Demo Screenshot](images/PartC-2.png)
+
+![Demo Screenshot](images/PartC-5.png)
 
 
 

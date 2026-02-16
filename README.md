@@ -177,6 +177,20 @@ Analytics metrics (updated every 30 seconds)
 
 ![Demo Screenshot](images/PartC-5.png)
 
+### Expected Test Results
+- Baseline Latency 
+  - Average latency: 5-10ms (API call overhead)
+  - Max latency: 50-100ms (network jitter)
+  - 10K Events Throughput
+- Throughput: 500+ events/second
+- Processing time: < 30 seconds
+Consumer Lag
+ - Demonstrates lag increases under load
+ - Shows lag drains as consumer catches up
+Replay Metrics
+ - Metrics should be identical before and after replay
+ - Validates idempotent processing
+
 
 
 

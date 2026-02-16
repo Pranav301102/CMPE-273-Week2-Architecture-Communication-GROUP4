@@ -99,19 +99,20 @@ Why does this behavior happen?
 
 
 ## Part C: Streaming (Kafka or equivalent)
-### 1. Start the system
+### Test 
+1. Start the system
 ```bash
 cd cmpe273-comm-models-lab/streaming-kafka
 docker-compose build
 docker-compose up -d
 ```
 
-### 2. Wait for Kafka to be ready:
+2. Wait for Kafka to be ready:
 ```bash
 docker-compose logs kafka | grep "started"
 ```
 
-### 3. Create a test order via curl:
+3. Create a test order via curl:
 ```bash
 curl -X POST http://localhost:5001/order \
   -H "Content-Type: application/json" \
@@ -121,21 +122,21 @@ curl -X POST http://localhost:5001/order \
 
 This will:
 
-Producer (port 5001): Publishes OrderPlaced event to Kafka
-Inventory Consumer: Receives the event, processes it, publishes InventoryReserved or InventoryFailed
-Analytics Consumer: Receives inventory events and computes metrics
+- Producer (port 5001): Publishes OrderPlaced event to Kafka
+- Inventory Consumer: Receives the event, processes it, publishes InventoryReserved or InventoryFailed
+- Analytics Consumer: Receives inventory events and computes metrics
 
-### Monitor Events in Real-Time
+4. Monitor Events in Real-Time
 ```bash
 docker compose logs -f analytics_consumer
 ```
 
-### Run Full Test Suite
+5. Run Full Test Suite
 ```bash
 docker-compose run --rm tests
 ```
 
-### Test multiple orders
+6. Test multiple orders
 ```bash
 for i in {1..5}; do
   curl -X POST http://localhost:5001/order \
@@ -145,7 +146,7 @@ for i in {1..5}; do
 done
 ```
 
-### Different items
+7. Different items
 ```bash
 curl -X POST http://localhost:5001/order \
   -H "Content-Type: application/json" \
@@ -153,6 +154,18 @@ curl -X POST http://localhost:5001/order \
 ```
 
 ## Screenshots
+
+Run Full Test Suite
+![Demo Screenshot](images/PartC-4.png)
+
+Create a test order via curl 
+![Demo Screenshot](images/PartC-1.png)
+
+Multiple Orders
+![Demo Screenshot](images/PartC-3.png)
+
+Analytics metrics (updated every 30 seconds)
+![Demo Screenshot](images/PartC-2.png)
 
 
 

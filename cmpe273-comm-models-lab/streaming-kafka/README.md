@@ -293,12 +293,4 @@ streaming-kafka/
 - **Kafka**: Stream replay, topic-based, event log
 - **RabbitMQ**: Point-to-point, message deletion, work queue
 
-## Notes
 
-- Kafka ensures order preservation within a topic partition
-- Consumer offset commits track processing progress
-- Topics act as distributed event logs enabling replay
-- Multiple consumers can independently process same events
-- Broker replication (not shown) adds fault tolerance
-
-See the main [README.md](../README.md) for overall project context.

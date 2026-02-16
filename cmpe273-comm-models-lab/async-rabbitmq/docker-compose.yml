@@ -1,0 +1,63 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  order_service:
+    build: ./order_service
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - ORDER_STORE_PATH=/data/orders.db
+    ports:
+      - "8001:8000"
+    volumes:
+      - order_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  inventory_service:
+    build: ./inventory_service
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - DELAY_SEC=0
+      - FAIL_MODE=none
+      - FAIL_PROB=0.0
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      order_service:
+        condition: service_started
+
+  notification_service:
+    build: ./notification_service
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      order_service:
+        condition: service_started
+
+  tests:
+    build: ./tests
+    environment:
+      - ORDER_URL=http://order_service:8000
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - order_service
+      - inventory_service
+      - notification_service
+
+volumes:
+  order_data:

@@ -97,3 +97,65 @@ Why does this behavior happen?
 3. Failure cascades in synchronous systems
    - Any downstream outage/slowdown (Inventory) directly turns into errors at the caller (OrderService). This is a classic “cascading failure” risk in tightly coupled synchronous architectures.
 
+
+## Part C: Streaming (Kafka or equivalent)
+### 1. Start the system
+```bash
+cd cmpe273-comm-models-lab/streaming-kafka
+docker-compose build
+docker-compose up -d
+```
+
+### 2. Wait for Kafka to be ready:
+```bash
+docker-compose logs kafka | grep "started"
+```
+
+### 3. Create a test order via curl:
+```bash
+curl -X POST http://localhost:5001/order \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "user_1", "item": "pizza", "quantity": 1}'
+```
+
+
+This will:
+
+Producer (port 5001): Publishes OrderPlaced event to Kafka
+Inventory Consumer: Receives the event, processes it, publishes InventoryReserved or InventoryFailed
+Analytics Consumer: Receives inventory events and computes metrics
+
+### Monitor Events in Real-Time
+```bash
+docker compose logs -f analytics_consumer
+```
+
+### Run Full Test Suite
+```bash
+docker-compose run --rm tests
+```
+
+### Test multiple orders
+```bash
+for i in {1..5}; do
+  curl -X POST http://localhost:5001/order \
+    -H "Content-Type: application/json" \
+    -d "{\"user_id\": \"user_$i\", \"item\": \"burger\", \"quantity\": 2}"
+  sleep 1
+done
+```
+
+### Different items
+```bash
+curl -X POST http://localhost:5001/order \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "user_test", "item": "salad", "quantity": 3}'
+```
+
+## Screenshots
+
+
+
+
+
+

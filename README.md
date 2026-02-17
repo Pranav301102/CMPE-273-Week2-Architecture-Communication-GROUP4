@@ -266,6 +266,24 @@ docker compose down -v
 | **Async Processing** | Orders Processed | ✅ 10/10 | All accepted + processed |
 | **Resilience** | Acceptance During Outage | ✅ Yes | Orders queue when service down |
 
+### Screenshots for Part B
+
+#### Test 1: Idempotency Check
+Idempotency test showing duplicate message detection:
+![Idempotency Test](images/PartB-1.png)
+
+#### Test 2: Dead Letter Queue (DLQ)
+RabbitMQ queue status showing poison message in DLQ:
+![Dead Letter Queue](images/PartB-2.png)
+
+#### Test 3: Async Processing
+Orders being processed asynchronously by Inventory service:
+![Async Processing](images/PartB-3.png)
+
+#### RabbitMQ Management UI
+RabbitMQ Management console showing queue statistics:
+![RabbitMQ Management UI](images/PartB-4.png)
+
 ### Key Findings (Part B)
 
 #### Idempotency Strategy

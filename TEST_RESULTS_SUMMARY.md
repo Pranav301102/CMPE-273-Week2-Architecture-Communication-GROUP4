@@ -448,18 +448,6 @@ No single pattern is best for everything. Choose based on:
 - ✅ Replay consistency proof
 - ✅ Comparison with Parts A & B
 
-### Sample Answers to Assignment Questions
-
-**Q: Why does latency increase in Part A with delays?**
-> In synchronous REST architecture, the OrderService must wait for both Inventory and Notification services to complete before responding to the client. When Inventory has a 2-second delay, the total request latency becomes dependent on this delay. However, our timeout protection (1 second) prevents indefinite blocking, resulting in ~1011ms latency before the request is terminated with a timeout error. This demonstrates the critical path dependency in synchronous systems.
-
-**Q: How does idempotency work in Part B?**
-> Idempotency is implemented by maintaining a set of processed order_ids in each service. Before processing a message, the service checks if the order_id already exists in the set. If it does, the message is acknowledged and skipped without reprocessing. If it's new, the message is processed and the order_id is added to the set. This ensures exactly-once processing semantics even if messages are delivered multiple times due to retries or network issues.
-
-**Q: Why can Kafka replay events but RabbitMQ cannot?**
-> Kafka treats events as an immutable log that is retained for a configurable period (days/weeks). Consumers track their position in this log using offsets. By resetting the offset, a consumer can re-read old events. RabbitMQ, in contrast, treats messages as tasks that are removed from the queue once consumed and acknowledged. This queue-based model prioritizes reliable delivery and exactly-once consumption over replayability.
-
----
 
 ## Conclusion
 

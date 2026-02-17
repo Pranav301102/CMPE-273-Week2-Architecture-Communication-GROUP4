@@ -14,8 +14,8 @@ services:
   inventory_service:
     build: ./inventory_service
     environment:
-      - DELAY_SEC=2
-      - FAIL_MODE=none   # none|always|prob
+      - DELAY_SEC=0
+      - FAIL_MODE=always   # none|always|prob
       - FAIL_PROB=0.0
     ports:
       - "8002:8000"
